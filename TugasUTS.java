@@ -1,68 +1,86 @@
+class Mahasiswa {
+    private String NIM;
+    private String nama;
+    private String kelas;
+    private String alamat;
+
+    public Mahasiswa(String NIM, String nama, String kelas, String alamat) {
+        this.NIM = NIM;
+        this.nama = nama;
+        this.kelas = kelas;
+        this.alamat = alamat;
+    }
+
+    public String getNIM() {
+        return NIM;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public String getKelas() {
+        return kelas;
+    }
+
+    public String getAlamat() {
+        return alamat;
+    }
+}
+
 public class TugasUTS {
     public static void main(String[] args) {
-        // Data Mahasiswa
+        // 1. Membuat data mahasiswa
         Mahasiswa[] daftarMahasiswa = {
-            new Mahasiswa("23612091140", "Sion Yehezkiel Nababan", "BDRM23A", "Bandung"),
-            new Mahasiswa("23612091053", "Natanael Siahaan", "BDRM23A", "Medan"),
-            new Mahasiswa("23612091064", "T Rendi Wijaya", "BDRM23A", "Klaten")
+            new Mahasiswa("1234567890", "Budi Santoso", "IF-01", "Jl. Merdeka No. 1")
         };
 
-        // Data Mata Kuliah
-        String[] mataKuliah = {"Algoritma & Pemrograman II + Praktikum", "E-Commerce + Praktikum"};
-
-        // Nilai huruf masing-masing mahasiswa
-        String[][] nilaiHuruf = {
-            {"AB", "A"},     
-            {"B", "A"},      
-            {"A", "B"}       
+        // 2. Membuat matriks nilai mahasiswa
+        String[][] nilaiMatriks = {
+            {"AB", "A"}  // Nilai untuk Algoritma 1 dan DDTI
         };
 
-        // Cetak berdasarkan NIM
-        System.out.println("=== Hasil Pencarian NIM ===");
-        cariBerdasarkanNIM(daftarMahasiswa, nilaiHuruf, mataKuliah);
-
-        // Hitung total nilai
-        System.out.println("\n=== Total Nilai (Rekursif) ===");
-        for (int i = 0; i < daftarMahasiswa.length; i++) {
-            double total = totalNilaiRekursif(nilaiHuruf[i], 0);
-            System.out.println("Total nilai angka " + daftarMahasiswa[i].nama + ": " + total);
+        // Menampilkan tabel nilai
+        System.out.println("|    | Algoritma 1 | DDTI    |");
+        System.out.println("|---|---|---|");
+        for (String[] nilai : nilaiMatriks) {
+            System.out.printf("|    | %-6s | %-4s |\n", nilai[0], nilai[1]);
         }
-    }
 
-    // Fungsi pencarian berdasarkan NIM
-    public static void cariBerdasarkanNIM(Mahasiswa[] mahasiswa, String[][] nilaiHuruf, String[] mataKuliah) {
-        for (int i = 0; i < mahasiswa.length; i++) {
-            System.out.println("NIM: " + mahasiswa[i].nim);
-            System.out.println("Nama: " + mahasiswa[i].nama);
-            System.out.println("Kelas: " + mahasiswa[i].kelas);
-            System.out.println("Asal: " + mahasiswa[i].asal);
-            for (int j = 0; j < mataKuliah.length; j++) {
-                System.out.println("  Mata kuliah " + mataKuliah[j] + ": " + nilaiHuruf[i][j]);
+        // 3. Pencarian nilai berdasarkan digit terakhir NIM
+        System.out.println("\nHasil Pencarian Nilai:");
+        for (Mahasiswa mhs : daftarMahasiswa) {
+            String nim = mhs.getNIM();
+            int lastDigit = Character.getNumericValue(nim.charAt(nim.length() - 1));
+
+            System.out.println("NIM: " + nim + " (Digit Terakhir: " + lastDigit + ")");
+            System.out.print("Nilai: ");
+            
+            String[] nilai = nilaiMatriks[0]; // Ambil nilai mahasiswa pertama
+            if (lastDigit % 2 == 0) {
+                for (String n : nilai) {
+                    if (n.equals("A") || n.equals("C") || n.equals("E")) {
+                        System.out.print(n + " ");
+                    }
+                }
+            } else {
+                for (String n : nilai) {
+                    if (n.equals("AB") || n.equals("B") || n.equals("BC") || n.equals("CD")) {
+                        System.out.print(n + " ");
+                    }
+                }
             }
-            System.out.println();
+            System.out.println("\n");
         }
+
+        // 4. Fungsi rekursif: Faktorial
+        int totalNilai = 5; // Contoh nilai
+        System.out.println("Faktorial dari " + totalNilai + ": " + faktorial(totalNilai));
     }
 
-    // Fungsi rekursif untuk menghitung total nilai
-    public static double totalNilaiRekursif(String[] nilai, int index) {
-        if (index >= nilai.length) {
-            return 0;
-        }
-        double nilaiAngka = konversiNilai(nilai[index]);
-        return nilaiAngka + totalNilaiRekursif(nilai, index + 1);
-    }
-
-    // Fungsi konversi huruf ke angka
-    public static double konversiNilai(String huruf) {
-        return switch (huruf) {
-            case "A" -> 4.0;
-            case "AB" -> 3.5;
-            case "B" -> 3.0;
-            case "BC" -> 2.5;
-            case "C" -> 2.0;
-            case "D" -> 1.0;
-            case "E" -> 0.0;
-            default -> 0.0;
-        };
+    // Fungsi rekursif untuk menghitung faktorial
+    public static int faktorial(int n) {
+        if (n <= 1) return 1;
+        return n * faktorial(n - 1);
     }
 }
